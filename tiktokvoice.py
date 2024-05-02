@@ -176,3 +176,10 @@ class TikTokVoiceTTS:
         # Append the last merged chunk to the list
         merged_chunks.append(merged_chunk)
         return merged_chunks
+
+    @staticmethod
+    def get_voice_by_name(name: str) -> Voices:
+        for voice in TikTokVoiceTTS.Voices:
+            if voice.name == name:
+                return voice
+        raise ValueError(f"No voice found with the name '{name}'")
