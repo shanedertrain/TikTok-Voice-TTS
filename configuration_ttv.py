@@ -1,5 +1,5 @@
-from pathlib import Path
 import logging
+from pathlib import Path
 
 DEBUG = True
 
@@ -14,10 +14,11 @@ FOLDER_OUTPUT.mkdir(exist_ok=True)
 FOLDER_LOGS = FOLDER_ROOT / "logs"
 FOLDER_LOGS.mkdir(parents=True, exist_ok=True)
 
-FILEPATH_LOG = FOLDER_LOGS / 'log.log'
+FILEPATH_LOG = FOLDER_LOGS / "log.log"
+
 
 def configure_logger(log_file) -> logging.Logger:
-    logger = logging.getLogger('logger_ttv')
+    logger = logging.getLogger("logger_ttv")
     logger.setLevel(logging.DEBUG)
 
     # Create file handler which logs only messages above INFO level to the file
@@ -30,14 +31,15 @@ def configure_logger(log_file) -> logging.Logger:
 
     # Create a formatter and set it to the handler
     # Include filename and line number
-    formatter = logging.Formatter('[%(levelname)s] %(asctime)s: %(filename)s:%(lineno)d | %(message)s', '%H:%M:%S')
+    formatter = logging.Formatter("[%(levelname)s] %(asctime)s: %(filename)s:%(lineno)d | %(message)s", "%H:%M:%S")
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
 
     # Add the handlers to the logger
     logger.addHandler(file_handler)
     logger.addHandler(console_handler)
-    
+
     return logger
+
 
 LOGGER = configure_logger(FILEPATH_LOG)

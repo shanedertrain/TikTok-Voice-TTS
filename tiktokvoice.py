@@ -1,12 +1,13 @@
+import base64
 import enum
 import re
-import requests
-import base64
 import sys
 from pathlib import Path
 from threading import Thread
 
 import configuration_ttv as cfg
+import requests
+
 
 class TikTokVoiceTTS:
     class Voices(enum.Enum):
@@ -62,21 +63,12 @@ class TikTokVoiceTTS:
     def __init__(self):
         # Define the endpoint data with URLs and corresponding response keys
         self.ENDPOINT_DATA = [
-            {
-                "url": "https://tiktok-tts.weilnet.workers.dev/api/generation",
-                "response": "data"
-            },
-            {
-                "url": "https://countik.com/api/text/speech",
-                "response": "v_data"
-            },
-            {
-                "url": "https://gesserit.co/api/tiktok-tts",
-                "response": "base64"
-            }
+            {"url": "https://tiktok-tts.weilnet.workers.dev/api/generation", "response": "data"},
+            {"url": "https://countik.com/api/text/speech", "response": "v_data"},
+            {"url": "https://gesserit.co/api/tiktok-tts", "response": "base64"},
         ]
 
-    def tts(self, text: str, voice: Voices, output_filepath: Path = cfg.FOLDER_OUTPUT /"output.mp3") -> None:
+    def tts(self, text: str, voice: Voices, output_filepath: Path = cfg.FOLDER_OUTPUT / "output.mp3") -> None:
         # Specified voice is valid
         if voice not in self.Voices:
             raise ValueError("Voice must be a valid Voices enum value")
@@ -103,13 +95,7 @@ class TikTokVoiceTTS:
 
                 try:
                     # Request to the endpoint to generate audio for the chunk
-                    response = requests.post(
-                        entry["url"],
-                        json={
-                            "text": chunk,
-                            "voice": voice.name
-                        }
-                    )
+                    response = requests.post(entry["url"], json={"text": chunk, "voice": voice.name})
 
                     if response.status_code == 200:
                         # Store the audio data for the chunk
@@ -153,13 +139,13 @@ class TikTokVoiceTTS:
 
         # Split the text into chunks based on punctuation marks
         # Change the regex [.,!?:;-] to add more separation points
-        separated_chunks: list[str] = re.findall(r'.*?[.,!?:;-]|.+', text)
+        separated_chunks: list[str] = re.findall(r".*?[.,!?:;-]|.+", text)
 
         # Iterate through the chunks to check for their lengths
         for i, chunk in enumerate(separated_chunks):
             if len(chunk) > 300:
                 # Split chunk further into smaller parts
-                separated_chunks[i:i+1] = re.findall(r'.*?[ ]|.+', chunk)
+                separated_chunks[i : i + 1] = re.findall(r".*?[ ]|.+", chunk)
 
         # Initialize an empty string to hold the merged chunk
         merged_chunk: str = ""
